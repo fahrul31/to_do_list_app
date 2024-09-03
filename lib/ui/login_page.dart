@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/provider/auth_provider.dart';
-import 'package:to_do_list/ui/register_page.dart';
+import 'package:to_do_list/ui/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = '/login_page';
@@ -141,7 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: () async {
-                    Navigator.pushNamed(context, RegisterPage.routeName);
+                    Navigator.pushNamed(context, HomePage.routeName);
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(

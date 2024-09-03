@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/data/api/api_service.dart';
+import 'package:to_do_list/data/db/auth_repository.dart';
 import 'package:to_do_list/provider/auth_provider.dart';
+import 'package:to_do_list/provider/checklist_provider.dart';
+import 'package:to_do_list/ui/home_page.dart';
 import 'package:to_do_list/ui/login_page.dart';
 import 'package:to_do_list/ui/register_page.dart';
 
@@ -18,11 +21,14 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late AuthProvider authProvider;
-
+  late ChecklistProvider checklistProvider;
+  @override
   void initState() {
     super.initState();
+    final authRepository = AuthRepository();
     final apiService = ApiService();
-    authProvider = AuthProvider(apiService);
+    authProvider = AuthProvider(apiService, authRepository);
+    checklistProvider = ChecklistProvider(apiService, authRepository);
   }
 
   @override
@@ -30,6 +36,7 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => authProvider),
+        ChangeNotifierProvider(create: (context) => checklistProvider),
       ],
       child: MaterialApp(
         title: 'To-Do-List App',
@@ -40,7 +47,8 @@ class _MyAppState extends State<MyApp> {
         initialRoute: LoginPage.routeName,
         routes: {
           LoginPage.routeName: (context) => const LoginPage(),
-          RegisterPage.routeName: (context) => const RegisterPage()
+          RegisterPage.routeName: (context) => const RegisterPage(),
+          HomePage.routeName: (context) => const HomePage(),
         },
       ),
     );

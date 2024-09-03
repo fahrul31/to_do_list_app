@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_list/data/api/api_service.dart';
+import 'package:to_do_list/data/db/auth_repository.dart';
 import 'package:to_do_list/data/model/login_response.dart';
 import 'package:to_do_list/data/model/register_response.dart';
 
 class AuthProvider extends ChangeNotifier {
   final ApiService apiService;
+  final AuthRepository authRepository;
 
-  AuthProvider(this.apiService);
+  AuthProvider(this.apiService, this.authRepository);
 
   bool _isLoadingLogin = false;
   String? _errorMessageLogin;
@@ -32,9 +34,9 @@ class AuthProvider extends ChangeNotifier {
     final result = await apiService.login(username, password);
     _loginResponse = result;
 
-    if (_loginResponse?.data?.token != null) {
+    if (_loginResponse?.data != null) {
       _isLoadingLogin = false;
-      _errorMessageLogin = null;
+      authRepository.setToken(_loginResponse!.data!.token);
       notifyListeners();
     } else {
       _isLoadingLogin = false;
@@ -54,6 +56,9 @@ class AuthProvider extends ChangeNotifier {
     if (_registerResponse?.statusCode != 2000) {
       _isLoadingRegister = false;
       _errorMessageRegister = _registerResponse?.message ?? "Register gagal";
+      notifyListeners();
+    } else {
+      _isLoadingRegister = false;
       notifyListeners();
     }
   }
